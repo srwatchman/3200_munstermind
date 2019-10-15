@@ -5,15 +5,41 @@ app = Flask(__name__)
 def hello_world():
     return render_template('munstermind.html')
 
-@app.route('/checkguess', methods={'GET','POST'})
+@app.route('/checkguess', methods={'POST'})
 def checkguess():
     print('in check guess')
     print(request.json)
-    # if request.method == 'POST':
-    #     author = request.form['author']
-    #     title = request.form['title']
-    #     description = request.form['description']
-    return 'check guess executed!'
+    print(request.json['guess'][1])
+
+    guess_list = request.json['guess']
+    enigma_list = request.json['enigma']
+    for guess_list_index, guess_list_word in enumerate(guess_list):
+        if guess_list_word == enigma_list[guess_list_index]:
+            enigma_list[guess_list_index] = "x"
+            guess_list[guess_list_index] = "*"
+
+    for guess_list_index, guess_list_word in enumerate(guess_list):
+        for enigma_list_index, enigma_list_word in enumerate(enigma_list):
+            if guess_list_word == enigma_list_word:
+                enigma_list[enigma_list_index] = "x"
+                guess_list[guess_list_index] = "~"
+                break #needed for case: secret wwyy, guess yyww (w/o break u get ~~## instead of ~~~~)
+    print("clue: ", guess_list)
+
+    # var hint = {
+    # whitePegs: 0,
+    # blackPegs: 0
+    # }
+    black_pegs = 0
+    white_pegs = 0
+    for char in guess_list:
+        if char == "*":
+            black_pegs = black_pegs + 1
+        elif char == "~":
+            white_pegs = white_pegs + 1
+    hint = {'whitePegs':white_pegs, 'blackPegs':black_pegs}
+    return hint
+
 
 @app.route('/tinker_json')
 def bar():

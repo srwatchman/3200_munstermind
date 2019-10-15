@@ -24,10 +24,11 @@
 
     //this function returns a hint from a remote server in
     function checkGuessRemote(guessRemote, enigmaRemote) {
-      alert(guessRemote)
       var reqObj = new Object();
-      reqObj.guess = JSON.stringify(guessRemote);
-      reqObj.enigma = JSON.stringify(enigmaRemote);
+      //reqObj.guess = JSON.stringify(guessRemote);
+      //reqObj.enigma = JSON.stringify(enigmaRemote);
+      reqObj.guess = guessRemote;
+      reqObj.enigma = enigmaRemote;
 
       fetch('/checkguess', {
           method: "POST",
@@ -45,6 +46,11 @@
         .then((resp) => {
           console.log(resp);
           alert(JSON.stringify(resp));
+          //return JSON.stringify(resp);
+          hint = JSON.parse(JSON.stringify(resp));
+          alert('black....')
+          alert(hint.blackPegs)
+          addPegs(hint.whitePegs, hint.blackPegs, 1);
         })
         .catch((err) => {
           // Code called when an error occurs during the request
@@ -287,8 +293,7 @@
         enigmaRemote.push(colorArray[index])
       }
       var hint = checkGuessRemote(guessRemote, enigmaRemote)
-      alert(guessRemote)
-      alert(enigmaRemote)
+      alert("myHint:",hint)
       addPegs(hint.whitePegs, hint.blackPegs, row + 1);
       remainingCombos = generateRemainingCombos(remainingCombos, guess, hint.whitePegs, hint.blackPegs);
     }
