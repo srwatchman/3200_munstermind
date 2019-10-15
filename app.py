@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 app = Flask(__name__)
 
 @app.route('/')
@@ -8,7 +8,7 @@ def hello_world():
 @app.route('/checkguess', methods={'GET','POST'})
 def checkguess():
     print('in check guess')
-    print(request)
+    print(request.json)
     # if request.method == 'POST':
     #     author = request.form['author']
     #     title = request.form['title']
