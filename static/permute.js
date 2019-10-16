@@ -25,8 +25,6 @@
     //this function returns a hint from a remote server in
     function checkGuessRemote(guessRemote, enigmaRemote, row) {
       var reqObj = new Object();
-      //reqObj.guess = JSON.stringify(guessRemote);
-      //reqObj.enigma = JSON.stringify(enigmaRemote);
       reqObj.guess = guessRemote;
       reqObj.enigma = enigmaRemote;
 
@@ -55,107 +53,6 @@
 
     }
 
-    //this function returns a hint (the number of white and black pegs)
-    //NOTE: if a user has, say, two right colors and one correctly placed color the function will
-    //return 2 white and 2 black. This is different than in Mastermind where 1 white and 1 black would
-    //be shown
-    //it takes the guess array and the mystery array (e.g. the sequence of colored pegs one is trying to divine)
-    function checkGuess(guess, mystery) {
-      var hint = {
-        whitePegs: 0,
-        blackPegs: 0
-      }
-
-      for (var y = 0; y < guess.length; y++) {
-        for (var z = 0; z < mystery.length; z++) {
-          if (guess[y] == mystery[z]) {
-            hint.whitePegs = hint.whitePegs + 1;
-            if (y == z) {
-              hint.blackPegs = hint.blackPegs + 1;
-            }
-          }
-        };
-
-      };
-      return hint;
-    }
-
-    //arrVar: the array of objects to create permutations from (in Mastermind this is typically 8 colored spheres)
-    //permutationParam: the permutation. on the initial call to this function it should just be an empty string
-    //permutationLength: the length of the permutation string one is trying to build. it can be up to arrVar.length
-    //but typically it's just four.
-    //permuteCollection: the collection of permutations
-    function permute(arrVar, permutation, permutationLength, permuteCollection) {
-      for (var i = 0; i < arrVar.length; i++) {
-        //these next two lines pop off the last element in the permutation. this is needed because of the loop.
-        //if one didn't, after say the perm of abc one would get abcd instead of the intended abd
-        if (i > 0) {
-          permutation = permutation.substring(0, permutation.length - 1);
-        }
-        permutation = permutation + arrVar[i];
-        if (permutation.length == 8) {
-          var permuteTruncated = permutation.substring(0, permutationLength)
-          if (permuteCollection.indexOf(permuteTruncated) == -1) {
-            permuteCollection.push(permuteTruncated);
-          }
-        }
-
-        var newArrVar = arrVar.slice(0);
-        newArrVar.splice(i, 1);
-
-        permute(newArrVar, permutation, permutationLength, permuteCollection);
-
-      };
-      return permuteCollection;
-    }
-
-    //this returns the remaining possible permutations as an array
-    //it requires:
-    //remainingCombos: the collection returned by this same function or by the permute function above
-    //guess: the user's guess passed as an array of length 4
-    //whitepegs: the number of whitepegs returned from a call to the checkGuess function
-    //blackpegs: the number of black pegs returned from a call to the checkGuess function
-
-    function remainingChoices(remainingCombos, guess, whitePegs, blackPegs) {
-
-      var newCombo = [];
-
-      for (var i = 0; i < remainingCombos.length; i++) {
-        var match = 0;
-        for (var y = 0; y < guess.length; y++) {
-          for (var z = 0; z < remainingCombos[i].length; z++) {
-            if (guess[y] == remainingCombos[i].substring(z, z + 1)) {
-              match = match + 1;
-            }
-          };
-
-        };
-        if (match == whitePegs) {
-          var blackMatch = 0;
-          for (var y = 0; y < guess.length; y++) {
-            if (guess[y] == remainingCombos[i].substring(y, y + 1)) {
-              blackMatch = blackMatch + 1;
-            }
-          };
-          if (blackMatch == blackPegs) {
-            newCombo.push(remainingCombos[i]);
-          }
-
-
-        }
-      };
-      return newCombo;
-    }
-
-    //this returns a random permute (which can be used as a guess) from the remaining permute collection
-    function randomChoiceGenerator(arr) {
-      var randomVar = Math.floor(Math.random() * (1 + arr.length - 0)) + 0;
-      if (randomVar > 0) {
-        randomVar = randomVar - 1;
-      }
-
-      return randomVar
-    }
 
     //used for development
     function debug(arr) {
@@ -268,8 +165,6 @@
       populateRows();
       var row = guessFinished();
       populateColorSelector(row);
-      remainingCombos = permute(letterArray, '', 4, []);
-      displayRemainingCombos(remainingCombos);
       document.getElementById('hint').style.display = 'none';
     }
 
@@ -332,30 +227,6 @@
 
     }
 
-    function generateRemainingCombos(remainingCombos, guess, whitePegs, blackPegs) {
-      if (remainingCombos.length == 0) {
-        remainingCombos = permute(letterArray, '', 4, []);
-      }
-      remainingCombos = remainingChoices(remainingCombos, guess, whitePegs, blackPegs);
-      displayRemainingCombos(remainingCombos);
-      return remainingCombos;
-
-    }
-
-    function displayRemainingCombos(remainingCombos) {
-      document.getElementById('remainingComboNumber').innerHTML = '(' + remainingCombos.length + ')';
-      document.getElementById('remainingCombos').innerHTML = ' ';
-      for (var i = 0; i < remainingCombos.length; i++) {
-        for (var z = 0; z < remainingCombos[i].length; z++) {
-          var pos = letterArray.indexOf(remainingCombos[i][z])
-          var divvar = document.createElement('div');
-          divvar.setAttribute('class', colorCircleArray[pos]);
-          document.getElementById('remainingCombos').appendChild(divvar);
-        };
-        var brvar = document.createElement('br');
-        document.getElementById('remainingCombos').appendChild(brvar);
-      };
-    }
 
     function hint() {
       if (document.getElementById('hintCheckBox').checked == true) {
