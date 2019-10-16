@@ -23,7 +23,7 @@
 
 
     //this function returns a hint from a remote server in
-    function checkGuessRemote(guessRemote, enigmaRemote) {
+    function checkGuessRemote(guessRemote, enigmaRemote, row) {
       var reqObj = new Object();
       //reqObj.guess = JSON.stringify(guessRemote);
       //reqObj.enigma = JSON.stringify(enigmaRemote);
@@ -45,12 +45,8 @@
         })
         .then((resp) => {
           console.log(resp);
-          alert(JSON.stringify(resp));
-          //return JSON.stringify(resp);
           hint = JSON.parse(JSON.stringify(resp));
-          alert('black....')
-          alert(hint.blackPegs)
-          addPegs(hint.whitePegs, hint.blackPegs, 1);
+          addPegs(hint.whitePegs, hint.blackPegs, row + 1);
         })
         .catch((err) => {
           // Code called when an error occurs during the request
@@ -281,9 +277,9 @@
       var row = guessFinished();
       populateColorSelector(row);
       var guess = extractAnswer(row);
-      //old way
+      //Using local hint algo:
       //var hint = checkGuess(guess,enigma);
-      //jsonway
+      //Using remote hint algo:
       var guessRemote = [];
       var enigmaRemote = [];
       for (var i = 0; i < guess.length; i++) {
@@ -292,14 +288,10 @@
         index = letterArray.indexOf(enigma[i])
         enigmaRemote.push(colorArray[index])
       }
-      var hint = checkGuessRemote(guessRemote, enigmaRemote)
-      alert("myHint:",hint)
-      addPegs(hint.whitePegs, hint.blackPegs, row + 1);
-      remainingCombos = generateRemainingCombos(remainingCombos, guess, hint.whitePegs, hint.blackPegs);
+      checkGuessRemote(guessRemote, enigmaRemote, row)
     }
 
     function addPegs(whitePegs, blackPegs, row) {
-      var whitePegs = whitePegs - blackPegs;
       var rowPegRef = row + '_' + 'peg';
       for (var i = 0; i < whitePegs; i++) {
         var whiteVar = document.createElement('div');

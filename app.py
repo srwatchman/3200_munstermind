@@ -25,11 +25,6 @@ def checkguess():
                 guess_list[guess_list_index] = "~"
                 break #needed for case: secret wwyy, guess yyww (w/o break u get ~~## instead of ~~~~)
     print("clue: ", guess_list)
-
-    # var hint = {
-    # whitePegs: 0,
-    # blackPegs: 0
-    # }
     black_pegs = 0
     white_pegs = 0
     for char in guess_list:
@@ -38,6 +33,7 @@ def checkguess():
         elif char == "~":
             white_pegs = white_pegs + 1
     hint = {'whitePegs':white_pegs, 'blackPegs':black_pegs}
+    print(hint)
     return hint
 
 

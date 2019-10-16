@@ -7,7 +7,6 @@
   <body onload="init()">
     <div id="mastermindContainer">
       <h2>Munster Mind</h2>
-      <a href="#" onclick="checkGuessRemote(['red','green','blue','orange'],['red','green','white','blue'])">Checkguess</a>
       <div id="enigma">
       </div>
 
@@ -24,7 +23,6 @@
         <button id="newGame" onclick="location.reload()">New Game</button>
         <button id="checkGuess" onclick="checkUsersAnswer()" disabled>Check Guess</button>
         <input id="enigmaCheckBox" type="checkbox" onclick="revealEnigma()">Show Enigma
-        <input id="hintCheckBox" type="checkbox" onclick="hint()">Show Hints
       </div>
 
       <div id="hint">
