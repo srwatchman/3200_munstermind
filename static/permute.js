@@ -21,6 +21,38 @@
       return newArr;
     };
 
+    //this function returns a hint from a remote server in
+    function dev(guessRemote, enigmaRemote, row) {
+      var reqObj = new Object();
+      reqObj.guess = guessRemote;
+      reqObj.enigma = enigmaRemote;
+      console.log("This is the object that is being sent to the server (BEFORE its converted to JSON):", reqObj )
+      console.log("This is the object that is being sent to the server (AFTER  its converted to JSON):", JSON.stringify(reqObj) )
+      console.log("This is it's type:", typeof(JSON.stringify(reqObj)) )
+      fetch('/checkguess', {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Origin': '*'
+          },
+          body: JSON.stringify(reqObj),
+          //credentials: "same-origin"
+          credentials: "include"
+        })
+        .then((response) => {
+          return response.json();
+        })
+        .then((resp) => {
+          console.log("This is the object that is being returned from the server (after it has been converted from JSON three lines up)", resp)
+          hint = JSON.parse(JSON.stringify(resp));
+        })
+        .catch((err) => {
+          // Code called when an error occurs during the request
+          alert('Error: ' + err.message);
+        });
+
+    }
+
 
     //this function returns a hint from a remote server in
     function checkGuessRemote(guessRemote, enigmaRemote, row) {
@@ -43,7 +75,7 @@
         })
         .then((resp) => {
           console.log(resp);
-          hint = JSON.parse(JSON.stringify(resp));
+          var hint = resp;
           addPegs(hint.whitePegs, hint.blackPegs, row + 1);
         })
         .catch((err) => {
