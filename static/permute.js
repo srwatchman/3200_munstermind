@@ -21,7 +21,9 @@
       return newArr;
     };
 
-    //this function returns a hint from a remote server in
+    //this function returns a hint from a remote server.  it is not used
+    //except to illustrate how the json package goes back and forth
+    //the function that is used is below.  its called checkGuessRemote
     function dev(guessRemote, enigmaRemote, row) {
       var reqObj = new Object();
       reqObj.guess = guessRemote;
