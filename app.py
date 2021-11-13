@@ -15,11 +15,34 @@ def checkguess():
     enigma_list = request.json['enigma']
 
     #Hey student: your code here!!!!
+    hint = [
+     {
+        'whitePegs': 0,
+    },
+    {
+        'whitePegs': 1,
+    },
+    {
+        'whitePegs': 2,
+    },
+    {
+        'whitePegs': 3,
+    },
+    {
+        'blackPegs': 4,
+    }
+    ]
+    
+    x = 0
+    
+    for i, list in enumerate(enigma_list):
+        if guess_list[i] in list:
+            x = x + 1
+        
 
-    hint = {'whitePegs':1, 'blackPegs':2} #create the hint as a dict
-    print("the hint:", hint) #print out the hint to the console
-    return jsonify(hint) #return the dict as a json
-
+    #hint = {'whitePegs':0, 'blackPegs':0} #create the hint as a dict
+    print("the hint:", hint[x]) #print out the hint to the console
+    return jsonify(hint[x]) #return the dict as a json
 
 @app.route('/tinker_json')
 def bar():
